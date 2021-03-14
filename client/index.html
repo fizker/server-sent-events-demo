@@ -1,0 +1,28 @@
+<!doctype html>
+
+<style>
+	th {
+		text-align: right;
+	}
+	.buttons {
+		text-align: right;
+	}
+</style>
+
+<form method="post" action="/messages">
+	<table>
+		<tr>
+			<th><label for="event-name">Event name:</label></th>
+			<td><input id="event-name" name="name"></td>
+		</tr>
+		<tr>
+			<th><label for="event-data">Data:</label></th>
+			<td><textarea id="event-data" name="data"></textarea></td>
+		</tr>
+		<tr>
+			<td colspan="2" class="buttons">
+				<button>Send event</button>
+			</td>
+		</tr>
+	</table>
+</form>
