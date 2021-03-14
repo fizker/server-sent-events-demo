@@ -12,8 +12,12 @@
 <form method="post" action="/messages">
 	<table>
 		<tr>
-			<th><label for="event-name">Event name:</label></th>
+			<th><label for="event-name">Event type:</label></th>
 			<td><input id="event-name" name="name"></td>
+		</tr>
+		<tr>
+			<th><label for="event-id">Event id:</label></th>
+			<td><input id="event-id" name="id"></td>
 		</tr>
 		<tr>
 			<th><label for="event-data">Data:</label></th>
@@ -26,3 +30,16 @@
 		</tr>
 	</table>
 </form>
+
+<script>
+	const eventSource = new EventSource("/messages")
+	eventSource.addEventListener("test", (event) => {
+		console.log({ type: "test", event })
+	}, false)
+	eventSource.onopen = () => {
+		console.log("Event source is open")
+	}
+	eventSource.onmessage = (event) => {
+		console.log({ type: "message", event })
+	}
+</script>
