@@ -6,4 +6,7 @@
 		<RootNamespace>net_cli</RootNamespace>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="LaunchDarkly.EventSource" Version="4.0.0" />
+	</ItemGroup>
 </Project>
