@@ -1,0 +1,9 @@
+#!/bin/sh
+
+url=$1
+
+if [ "$url" == "" ]; then
+	url="http://localhost:8030/messages"
+fi
+
+curl "$url"
