@@ -31,7 +31,11 @@ namespace net_cli
 
 		public void Connect()
 		{
-			_ = _eventSource.StartAsync();
+			var task = _eventSource.StartAsync();
+			task.ContinueWith(task =>
+			{
+				Console.WriteLine("EventSource closed");
+			});
 		}
 
 		void OnOpen(object sender, StateChangedEventArgs e)
