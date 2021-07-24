@@ -9,7 +9,7 @@
 	}
 </style>
 
-<form method="post" action="/messages">
+<form method="post" action="/messages" onsubmit="onSubmit(event).catch(console.error)">
 	<table>
 		<tr>
 			<th><label for="event-name">Event type:</label></th>
@@ -41,5 +41,19 @@
 	}
 	eventSource.onmessage = (event) => {
 		console.log({ type: "message", event })
+	}
+
+	async function onSubmit(event) {
+		event.preventDefault()
+
+		const form = event.currentTarget
+		const data = new FormData(form)
+		const body = new URLSearchParams(data)
+		const res = await fetch(form.action, {
+			method: form.method,
+			body,
+		})
+		const message = await res.text()
+		alert(message)
 	}
 </script>
