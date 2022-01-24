@@ -12,8 +12,11 @@
 		margin-left: 10px;
 	}
 
-	#messages th {
+	#incoming th {
 		text-align: left;
+	}
+	#incoming :is(td, th) {
+		padding: 5px;
 	}
 
 	body {
@@ -64,6 +67,7 @@
 	<table>
 		<thead>
 			<tr>
+				<th>Timestamp</th>
 				<th>Type</th>
 				<th>ID</th>
 				<th>Data</th>
@@ -72,23 +76,43 @@
 		<tbody id="messages">
 		</tbody>
 	</table>
+	<h2>Other events</h2>
+	<table>
+		<tr>
+			<td>
+				<h3>Register type</h3>
+				<form onsubmit="registerNewType(event).catch(console.error)">
+					<input name="type">
+					<button>Register new type</button>
+				</form>
+			</td>
+			<td>
+				<h3>Registered types</h3>
+				<ul id="registered-types">
+				</ul>
+			</td>
+		</tr>
+	</table>
 </section>
 
 <script>
 	const sendStatusLabel = document.querySelector("#send-status")
 	const statusLabel = document.querySelector("#status")
 	const messageContainer = document.querySelector("#messages")
+	const registeredTypesContainer = document.querySelector("#registered-types")
+	const types = new Set()
 
 	const eventSource = new EventSource("/messages")
-	eventSource.addEventListener("test", (event) => {
-		console.log({ type: "test", event })
-	}, false)
 	eventSource.onopen = () => {
 		console.log("Event source is open")
 		statusLabel.innerHTML = "Open"
 	}
 	eventSource.onmessage = (message) => {
 		console.log({ message })
+		addEventMessage("message", message)
+	}
+
+	function addEventMessage(type, message) {
 		const row = messageContainer.insertRow(0)
 		row.insertCell().innerHTML = new Date().toJSON()
 		row.insertCell().innerHTML = message.type
@@ -96,10 +120,28 @@
 		row.insertCell().innerHTML = message.data
 	}
 
+	function addType(type) {
+		if(type === "message" || types.has(type)) {
+			return
+		}
+		console.log('adding type', { type })
+		eventSource.addEventListener(type, (message) => {
+			addEventMessage(type, message)
+		})
+		types.add(type)
+		registeredTypesContainer.innerHTML = Array.from(types)
+			.sort()
+			.map(x => `<li>${x}</li>`)
+			.join("\n")
+	}
+
 	async function onSubmit(event) {
 		event.preventDefault()
 
 		const form = event.currentTarget
+
+		addType(form.type.value)
+
 		const data = new FormData(form)
 		const body = new URLSearchParams(data)
 		const res = await fetch(form.action, {
@@ -108,5 +150,13 @@
 		})
 		const message = await res.text()
 		sendStatusLabel.innerHTML = message
+	}
+
+	async function registerNewType(event) {
+		event.preventDefault()
+
+		const form = event.currentTarget
+		const type = form.type.value
+		addType(type)
 	}
 </script>
