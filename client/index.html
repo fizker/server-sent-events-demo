@@ -28,27 +28,27 @@
 <section>
 	<h1>Send message</h1>
 
-<form method="post" action="/messages" onsubmit="onSubmit(event).catch(console.error)">
-	<table>
-		<tr>
-			<th><label for="event-type">Event type:</label></th>
-			<td><input id="event-type" name="type" value="message"></td>
-		</tr>
-		<tr>
-			<th><label for="event-id">Event id:</label></th>
-			<td><input id="event-id" name="id"></td>
-		</tr>
-		<tr>
-			<th><label for="event-data">Data:</label></th>
-			<td><textarea id="event-data" name="data"></textarea></td>
-		</tr>
-		<tr>
-			<td colspan="2" class="buttons">
-				<button>Send event</button>
-			</td>
-		</tr>
-	</table>
-</form>
+	<form method="post" action="/messages" onsubmit="onSubmit(event).catch(console.error)">
+		<table>
+			<tr>
+				<th><label for="event-type">Event type:</label></th>
+				<td><input id="event-type" name="type" value="message"></td>
+			</tr>
+			<tr>
+				<th><label for="event-id">Event id:</label></th>
+				<td><input id="event-id" name="id"></td>
+			</tr>
+			<tr>
+				<th><label for="event-data">Data:</label></th>
+				<td><textarea id="event-data" name="data"></textarea></td>
+			</tr>
+			<tr>
+				<td colspan="2" class="buttons">
+					<button>Send event</button>
+				</td>
+			</tr>
+		</table>
+	</form>
 
 	<div id="send-status">
 	</div>
