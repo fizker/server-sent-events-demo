@@ -7,13 +7,32 @@
 	.buttons {
 		text-align: right;
 	}
+
+	#incoming {
+		margin-left: 10px;
+	}
+
+	#messages th {
+		text-align: left;
+	}
+
+	body {
+		display: flex;
+	}
+
+	body > * {
+		flex-grow: 1;
+	}
 </style>
+
+<section>
+	<h1>Send message</h1>
 
 <form method="post" action="/messages" onsubmit="onSubmit(event).catch(console.error)">
 	<table>
 		<tr>
-			<th><label for="event-name">Event type:</label></th>
-			<td><input id="event-name" name="name"></td>
+			<th><label for="event-type">Event type:</label></th>
+			<td><input id="event-type" name="type" value="message"></td>
 		</tr>
 		<tr>
 			<th><label for="event-id">Event id:</label></th>
@@ -31,16 +50,50 @@
 	</table>
 </form>
 
+	<div id="send-status">
+	</div>
+</section>
+
+<section id="incoming">
+	<h1>Client</h1>
+	<label>
+		Status:
+		<span id="status">Connecting…</span>
+	</label>
+	<h2>Messages</h2>
+	<table>
+		<thead>
+			<tr>
+				<th>Type</th>
+				<th>ID</th>
+				<th>Data</th>
+			</tr>
+		</thead>
+		<tbody id="messages">
+		</tbody>
+	</table>
+</section>
+
 <script>
+	const sendStatusLabel = document.querySelector("#send-status")
+	const statusLabel = document.querySelector("#status")
+	const messageContainer = document.querySelector("#messages")
+
 	const eventSource = new EventSource("/messages")
 	eventSource.addEventListener("test", (event) => {
 		console.log({ type: "test", event })
 	}, false)
 	eventSource.onopen = () => {
 		console.log("Event source is open")
+		statusLabel.innerHTML = "Open"
 	}
-	eventSource.onmessage = (event) => {
-		console.log({ type: "message", event })
+	eventSource.onmessage = (message) => {
+		console.log({ message })
+		const row = messageContainer.insertRow(0)
+		row.insertCell().innerHTML = new Date().toJSON()
+		row.insertCell().innerHTML = message.type
+		row.insertCell().innerHTML = message.lastEventId
+		row.insertCell().innerHTML = message.data
 	}
 
 	async function onSubmit(event) {
@@ -54,6 +107,6 @@
 			body,
 		})
 		const message = await res.text()
-		alert(message)
+		sendStatusLabel.innerHTML = message
 	}
 </script>
