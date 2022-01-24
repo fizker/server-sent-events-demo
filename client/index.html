@@ -63,6 +63,22 @@
 		Status:
 		<span id="status">Connecting…</span>
 	</label>
+	<table>
+		<tr>
+			<td>
+				<h2>Register type</h2>
+				<form onsubmit="registerNewType(event).catch(console.error)">
+					<input name="type">
+					<button>Register new type</button>
+				</form>
+			</td>
+			<td>
+				<h2>Registered types</h2>
+				<ul id="registered-types">
+				</ul>
+			</td>
+		</tr>
+	</table>
 	<h2>Messages</h2>
 	<table>
 		<thead>
@@ -75,23 +91,6 @@
 		</thead>
 		<tbody id="messages">
 		</tbody>
-	</table>
-	<h2>Other events</h2>
-	<table>
-		<tr>
-			<td>
-				<h3>Register type</h3>
-				<form onsubmit="registerNewType(event).catch(console.error)">
-					<input name="type">
-					<button>Register new type</button>
-				</form>
-			</td>
-			<td>
-				<h3>Registered types</h3>
-				<ul id="registered-types">
-				</ul>
-			</td>
-		</tr>
 	</table>
 </section>
 
@@ -107,10 +106,7 @@
 		console.log("Event source is open")
 		statusLabel.innerHTML = "Open"
 	}
-	eventSource.onmessage = (message) => {
-		console.log({ message })
-		addEventMessage("message", message)
-	}
+	addType("message")
 
 	function addEventMessage(type, message) {
 		const row = messageContainer.insertRow(0)
@@ -121,7 +117,7 @@
 	}
 
 	function addType(type) {
-		if(type === "message" || types.has(type)) {
+		if(types.has(type)) {
 			return
 		}
 		console.log('adding type', { type })
