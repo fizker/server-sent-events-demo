@@ -20,10 +20,12 @@ let package = Package(
 		.package(url: "https://github.com/vapor/vapor.git", from: "4.55.0"),
 	],
 	targets: [
+		.target(name: "ServerSentEventModels"),
 		.executableTarget(
 			name: "EventSourceServer",
 			dependencies: [
 				.product(name: "Vapor", package: "vapor"),
+				"ServerSentEventModels",
 			],
 			swiftSettings: [
 				// Enable better optimizations when building in Release configuration. Despite the use of
