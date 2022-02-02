@@ -4,8 +4,8 @@ import ServerSentEventModels
 func routes(_ app: Application) throws {
 	let stream = MessageStream()
 
-	app.get { req -> String in
-		return "Hello world"
+	app.get { req -> Response in
+		req.fileio.streamFile(at: "../client/index.html")
 	}
 
 	app.get("messages") { req -> ServerSentEventResponse in
