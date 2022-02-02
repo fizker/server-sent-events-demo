@@ -11,7 +11,10 @@ func routes(_ app: Application) throws {
 	app.get("messages") { req -> ServerSentEventResponse in
 		let id = UUID()
 		print("Adding SSE client (\(id))")
-		return ServerSentEventResponse(stream: stream.createStream(id: id))
+		return ServerSentEventResponse(stream: stream.createStream(id: id), onClose: {
+			print("Removing SSE client (\(id))")
+			stream.close(id: id)
+		})
 	}
 
 	app.post("messages") { req -> String in
