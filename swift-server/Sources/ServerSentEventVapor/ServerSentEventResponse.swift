@@ -6,22 +6,11 @@ public class ServerSentEventResponse: AsyncResponseEncodable {
 		( "content-type", serverSentEventMIMEType ),
 	])
 	private let stream: AsyncStream<MessageEvent>
-	private var onClose: (() -> Void)?
-	private var streamWriter: BodyStreamWriter?
+	private var onClose: () -> Void
 
 	init(stream: AsyncStream<MessageEvent>, onClose: @escaping () -> Void) {
 		self.stream = stream
 		self.onClose = onClose
-	}
-
-	deinit {
-		// End the stream if it is still attached.
-		_ = streamWriter?.safeWrite(.end)
-		streamWriter = nil
-
-		// Inform the listener that the response is closed
-		onClose?()
-		onClose = nil
 	}
 
 	public func encodeResponse(for request: Request) async throws -> Response {
@@ -32,28 +21,24 @@ public class ServerSentEventResponse: AsyncResponseEncodable {
 		)
 	}
 
-	/// This is extracted to ensure that streamWriter is attached to the response. If it is not, then the writer will be
-	/// deinit before the response, and it fails if it is deinit before `.end` have been written.
 	private func write(_ writer: BodyStreamWriter) {
-		self.streamWriter = writer
 		Task {
-			try await writer.write(line: ":ok")
-			try await writer.write(line: "")
-
-			for await data in self.stream {
-				guard let writer = streamWriter
-				else { break }
-
-				for line in data.asLines {
-					try await writer.write(line: line.asString)
-				}
+			do {
+				try await writer.write(line: ":ok")
 				try await writer.write(line: "")
+
+				for await data in self.stream {
+					for line in data.asLines {
+						try await writer.write(line: line.asString)
+					}
+					try await writer.write(line: "")
+				}
+			} catch {
+				// If something goes wrong with the writer, we close down
 			}
 
-			try await streamWriter?.write(.end)
-			streamWriter = nil
-			onClose?()
-			onClose = nil
+			try? await writer.write(.end)
+			onClose()
 		}
 	}
 }
