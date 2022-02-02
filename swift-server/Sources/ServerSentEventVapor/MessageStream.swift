@@ -1,34 +1,34 @@
 import Foundation
 import ServerSentEventModels
 
-class MessageStream {
-	typealias Stream = AsyncStream<MessageEvent>
+public class MessageStream {
+	public typealias Stream = AsyncStream<MessageEvent>
 
 	private var streams: [UUID: Stream.Continuation] = [:]
 
-	init() {
+	public init() {
 	}
 
-	func createStream(id: UUID) -> Stream {
+	public func createStream(id: UUID) -> Stream {
 		return AsyncStream {
 			streams[id] = $0
 		}
 	}
 
-	func emit(_ message: MessageEvent) {
+	public func emit(_ message: MessageEvent) {
 		for (_, continuation) in streams {
 			continuation.yield(message)
 		}
 	}
 
-	func close() {
+	public func close() {
 		for (_, continuation) in streams {
 			continuation.finish()
 		}
 		streams = [:]
 	}
 
-	func close(id: UUID) {
+	public func close(id: UUID) {
 		let continuation = streams.removeValue(forKey: id)
 		continuation?.finish()
 	}

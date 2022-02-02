@@ -21,11 +21,19 @@ let package = Package(
 	],
 	targets: [
 		.target(name: "ServerSentEventModels"),
+		.target(
+			name: "ServerSentEventVapor",
+			dependencies: [
+				.product(name: "Vapor", package: "vapor"),
+				"ServerSentEventModels",
+			]
+		),
 		.executableTarget(
 			name: "EventSourceServer",
 			dependencies: [
 				.product(name: "Vapor", package: "vapor"),
 				"ServerSentEventModels",
+				"ServerSentEventVapor",
 			],
 			swiftSettings: [
 				// Enable better optimizations when building in Release configuration. Despite the use of

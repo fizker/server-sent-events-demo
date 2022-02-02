@@ -1,5 +1,6 @@
 import Vapor
 import ServerSentEventModels
+import ServerSentEventVapor
 
 func routes(_ app: Application) throws {
 	let stream = MessageStream()

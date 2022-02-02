@@ -1,7 +1,7 @@
 import Vapor
 import ServerSentEventModels
 
-class ServerSentEventResponse: AsyncResponseEncodable {
+public class ServerSentEventResponse: AsyncResponseEncodable {
 	let headers: HTTPHeaders = HTTPHeaders([
 		( "content-type", serverSentEventMIMEType ),
 	])
@@ -9,7 +9,7 @@ class ServerSentEventResponse: AsyncResponseEncodable {
 	private var onClose: (() -> Void)?
 	private var streamWriter: BodyStreamWriter?
 
-	init(stream: AsyncStream<MessageEvent>, onClose: @escaping () -> Void) {
+	public init(stream: AsyncStream<MessageEvent>, onClose: @escaping () -> Void) {
 		self.stream = stream
 		self.onClose = onClose
 	}
@@ -24,7 +24,7 @@ class ServerSentEventResponse: AsyncResponseEncodable {
 		onClose = nil
 	}
 
-	func encodeResponse(for request: Request) async throws -> Response {
+	public func encodeResponse(for request: Request) async throws -> Response {
 		return Response(
 			status: .ok,
 			headers: headers,
