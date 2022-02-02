@@ -9,7 +9,7 @@ public class ServerSentEventResponse: AsyncResponseEncodable {
 	private var onClose: (() -> Void)?
 	private var streamWriter: BodyStreamWriter?
 
-	public init(stream: AsyncStream<MessageEvent>, onClose: @escaping () -> Void) {
+	init(stream: AsyncStream<MessageEvent>, onClose: @escaping () -> Void) {
 		self.stream = stream
 		self.onClose = onClose
 	}

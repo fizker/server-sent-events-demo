@@ -1,7 +1,8 @@
 import Foundation
 import ServerSentEventModels
+import Vapor
 
-public class MessageStream {
+public class ServerSentEventController {
 	public typealias Stream = AsyncStream<MessageEvent>
 
 	private var streams: [UUID: Stream.Continuation] = [:]
@@ -9,7 +10,11 @@ public class MessageStream {
 	public init() {
 	}
 
-	public func createStream(id: UUID) -> Stream {
+	public func createResponse(id: UUID, onClose: @escaping () -> Void) -> ServerSentEventResponse {
+		return ServerSentEventResponse(stream: createStream(id: id), onClose: onClose)
+	}
+
+	func createStream(id: UUID) -> Stream {
 		return AsyncStream {
 			streams[id] = $0
 		}
