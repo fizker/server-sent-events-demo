@@ -7,10 +7,11 @@ Demo servers and clients for testing Server-Sent Events (EventSource in the brow
 The solution bundles some servers in different languages.
 
 
-### Node
+### Node.js
 
-1. `npm install`
-2. `npm start`
+1. `cd nodejs-server`
+2. `npm install`
+3. `npm start`
 
 To change the port of the server, simply set the `PORT` env var before starting the server: `PORT=1234 npm start`
 
