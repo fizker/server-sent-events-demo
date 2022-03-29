@@ -1,0 +1,14 @@
+FROM node:gallium-alpine as nodejs-server
+WORKDIR /app
+
+COPY nodejs-server/package*.json ./nodejs-server/
+
+RUN cd nodejs-server && npm ci
+
+COPY nodejs-server ./nodejs-server
+COPY client ./client
+
+WORKDIR /app/nodejs-server
+
+ENV PORT=80
+CMD [ "npm", "start" ]

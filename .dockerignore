@@ -1,0 +1,11 @@
+# Base files for any project
+Dockerfile*
+.dockerignore
+.git*
+
+# Project-specific files
+node_modules
+test
+
+# Typical OS files
+.DS_Store
