@@ -6,3 +6,10 @@ services:
       dockerfile: Dockerfile-nodejs-server
     ports:
       - 8030:80
+
+  swift-server:
+    build:
+      context: .
+      dockerfile: Dockerfile-swift-server
+    ports:
+      - 8031:80

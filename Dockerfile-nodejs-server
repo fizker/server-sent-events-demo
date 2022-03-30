@@ -10,5 +10,8 @@ COPY client ./client
 
 WORKDIR /app/nodejs-server
 
+# Let Docker bind to port 80
+EXPOSE 80
+
 ENV PORT=80
 CMD [ "npm", "start" ]
