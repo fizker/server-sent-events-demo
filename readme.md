@@ -2,17 +2,32 @@
 
 Demo servers and clients for testing Server-Sent Events (EventSource in the browser)
 
+
 ## Bundled servers
 
 The solution bundles some servers in different languages.
+They all bundle the same web client for easy testing, or any other client can be pointed at them.
 
 
-### Node
+### Running all servers in docker
 
-1. `npm install`
-2. `npm start`
+The simplest way to run the servers is to use docker.
 
-To change the port of the server, simply set the `PORT` env var before starting the server: `PORT=1234 npm start`
+In the root, run `docker compose up -d` to start all servers.
+
+The following ports are used by default:
+
+- 8030: NodeJS server
+- 8031: Swift server
+
+
+### Node.js
+
+1. `cd nodejs-server`
+2. `npm install`
+3. `npm start`
+
+The default port is 8030. To change the port of the server, simply set the `PORT` env var before starting the server: `PORT=1234 npm start`
 
 
 ### Swift
@@ -21,7 +36,7 @@ To change the port of the server, simply set the `PORT` env var before starting 
 2. `swift build`
 3. `swift run`
 
-To change the port of the server, simply set the `PORT` env var before starting the server: `PORT=1234 swift run`
+The default port is 8031. To change the port of the server, simply set the `PORT` env var before starting the server: `PORT=1234 swift run`
 
 
 ## Bundled clients

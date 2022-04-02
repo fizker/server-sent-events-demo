@@ -1,0 +1,17 @@
+FROM node:gallium-alpine as nodejs-server
+WORKDIR /app
+
+COPY nodejs-server/package*.json ./nodejs-server/
+
+RUN cd nodejs-server && npm ci
+
+COPY nodejs-server ./nodejs-server
+COPY client ./client
+
+WORKDIR /app/nodejs-server
+
+# Let Docker bind to port 80
+EXPOSE 80
+
+ENV PORT=80
+CMD [ "npm", "start" ]
