@@ -18,21 +18,21 @@ let package = Package(
 	],
 	dependencies: [
 		.package(url: "https://github.com/vapor/vapor.git", from: "4.55.0"),
+		.package(url: "https://github.com/fizker/swift-server-sent-event-models.git", from: "0.0.1"),
 	],
 	targets: [
-		.target(name: "ServerSentEventModels"),
 		.target(
 			name: "ServerSentEventVapor",
 			dependencies: [
 				.product(name: "Vapor", package: "vapor"),
-				"ServerSentEventModels",
+				.product(name: "ServerSentEventModels", package: "swift-server-sent-event-models"),
 			]
 		),
 		.executableTarget(
 			name: "EventSourceServer",
 			dependencies: [
 				.product(name: "Vapor", package: "vapor"),
-				"ServerSentEventModels",
+				.product(name: "ServerSentEventModels", package: "swift-server-sent-event-models"),
 				"ServerSentEventVapor",
 			],
 			swiftSettings: [

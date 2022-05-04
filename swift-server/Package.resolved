@@ -128,6 +128,15 @@
         }
       },
       {
+        "package": "swift-server-sent-event-models",
+        "repositoryURL": "https://github.com/fizker/swift-server-sent-event-models.git",
+        "state": {
+          "branch": null,
+          "revision": "ad2f260965166050a8c44be545f8b309b816b648",
+          "version": "0.0.1"
+        }
+      },
+      {
         "package": "vapor",
         "repositoryURL": "https://github.com/vapor/vapor.git",
         "state": {
