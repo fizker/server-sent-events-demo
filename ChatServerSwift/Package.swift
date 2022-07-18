@@ -4,15 +4,15 @@
 import PackageDescription
 
 let package = Package(
-	name: "EventSourceServer",
+	name: "ChatDemoServer",
 	platforms: [
 		.macOS(.v12),
 	],
 	products: [
 		.executable(
-			name: "EventSourceServer",
+			name: "ChatDemoServer",
 			targets: [
-				"EventSourceServer",
+				"ChatServer",
 			]
 		),
 	],
@@ -29,7 +29,7 @@ let package = Package(
 			]
 		),
 		.executableTarget(
-			name: "EventSourceServer",
+			name: "ChatServer",
 			dependencies: [
 				.product(name: "Vapor", package: "vapor"),
 				.product(name: "ServerSentEventModels", package: "swift-server-sent-event-models"),
