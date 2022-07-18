@@ -17,7 +17,7 @@ let package = Package(
 		),
 	],
 	dependencies: [
-		.package(url: "https://github.com/vapor/vapor.git", from: "4.55.0"),
+		.package(url: "https://github.com/vapor/vapor.git", from: "4.62.1"),
 		.package(url: "https://github.com/fizker/swift-server-sent-event-models.git", from: "0.0.1"),
 	],
 	targets: [
