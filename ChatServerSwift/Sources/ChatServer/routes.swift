@@ -4,6 +4,7 @@ import ServerSentEventVapor
 
 func routes(_ app: Application) throws {
 	let eventController = ServerSentEventController()
+	let userController = UserController()
 
 	app.get { req -> Response in
 		req.fileio.streamFile(at: "../client/index.html")
@@ -23,5 +24,25 @@ func routes(_ app: Application) throws {
 		eventController.emit(message)
 
 		return "Message is \(message)"
+	}
+
+	app.group("users") { app in
+		app.post("register") { try await Content(userController.registerUser(req: $0)) }
+	}
+}
+
+struct Content<T: Codable>: Codable, Vapor.Content {
+	var item: T
+
+	init(_ item: T) {
+		self.item = item
+	}
+
+	init(from decoder: Decoder) throws {
+		item = try T(from: decoder)
+	}
+
+	func encode(to encoder: Encoder) throws {
+		try item.encode(to: encoder)
 	}
 }
