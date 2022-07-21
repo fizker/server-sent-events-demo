@@ -1,10 +1,29 @@
+import Fluent
 import Vapor
 import ServerSentEventModels
 import ServerSentEventVapor
 
+extension UserModel: Authenticatable {
+}
+
+struct UserAuthenticator: AsyncBasicAuthenticator {
+	func authenticate(basic: BasicAuthorization, for request: Request) async throws {
+		guard
+			let user = try await UserModel.query(on: request.db)
+			.filter(\.$username == basic.username)
+			.first(),
+			try await request.password.async.verify(basic.password, created: user.passwordHash)
+		else { return }
+
+		request.auth.login(user)
+	}
+}
+
 func routes(_ app: Application) throws {
 	let eventController = ServerSentEventController()
 	let userController = UserController()
+
+	let app = app.grouped(UserAuthenticator())
 
 	app.get { req -> Response in
 		req.fileio.streamFile(at: "../client/index.html")
@@ -27,6 +46,10 @@ func routes(_ app: Application) throws {
 	}
 
 	app.group("users") { app in
+		app.grouped(UserModel.guardMiddleware()).get("self") { req in
+			try Content(req.auth.require(UserModel.self).asDTO)
+		}
+
 		app.post("register") { try await Content(userController.registerUser(req: $0)) }
 	}
 }
