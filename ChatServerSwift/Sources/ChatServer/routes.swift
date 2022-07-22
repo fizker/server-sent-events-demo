@@ -21,6 +21,7 @@ struct UserAuthenticator: AsyncBasicAuthenticator {
 
 func routes(_ app: Application) throws {
 	let eventController = ServerSentEventController()
+	let roomController = RoomController()
 	let userController = UserController()
 
 	let app = app.grouped(UserAuthenticator())
@@ -43,6 +44,32 @@ func routes(_ app: Application) throws {
 		eventController.emit(message)
 
 		return "Message is \(message)"
+	}
+
+	app.grouped(UserModel.guardMiddleware()).group("rooms") { app in
+		app.get {
+			Page(allItems: try await roomController.rooms(req: $0))
+		}
+
+		app.post {
+			Content(try await roomController.createRoom(req: $0))
+		}
+
+		app.group(":room") { app in
+			app.get {
+				Content(try await roomController.room(
+					req: $0,
+					roomID: try $0.parameters.require("room")
+				))
+			}
+
+			app.post("join") {
+				Content(try await roomController.joinRoom(
+					req: $0,
+					roomID: try $0.parameters.require("room")
+				))
+			}
+		}
 	}
 
 	app.group("users") { app in
