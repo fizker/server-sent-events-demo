@@ -27,7 +27,10 @@ func routes(_ app: Application) throws {
 	let app = app.grouped(UserAuthenticator())
 
 	app.get { req -> Response in
-		req.fileio.streamFile(at: "../client/index.html")
+		req.fileio.streamFile(at: "../ChatClientWeb/index.html")
+	}
+	app.get("styles.css") { req -> Response in
+		req.fileio.streamFile(at: "../ChatClientWeb/styles.css")
 	}
 
 	app.get("messages") { req -> ServerSentEventResponse in
