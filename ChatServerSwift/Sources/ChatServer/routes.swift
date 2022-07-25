@@ -48,7 +48,6 @@ func routes(_ app: Application) throws {
 		print("Adding SSE client (\(id))")
 		return eventController.createResponse(id: id, onClose: {
 			print("Removing SSE client (\(id))")
-			eventController.close(id: id)
 		})
 	}
 
