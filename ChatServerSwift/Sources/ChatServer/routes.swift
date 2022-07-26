@@ -6,6 +6,23 @@ import ServerSentEventVapor
 extension UserModel: Authenticatable {
 }
 
+struct AuthTokenInQueryAuthenticator: AsyncRequestAuthenticator {
+	func authenticate(request: Request) async throws {
+		if
+			let token = try? request.query.get(String.self, at: "token"),
+			let data = Data(base64Encoded: token),
+			let values = String(data: data, encoding: .utf8)
+		{
+			let a = values.components(separatedBy: ":")
+			let username = a[0]
+			let password = a[1...].joined(separator: ":")
+
+			let auth = UserAuthenticator()
+			try await auth.authenticate(basic: .init(username: username, password: password), for: request)
+		}
+	}
+}
+
 struct UserAuthenticator: AsyncBasicAuthenticator {
 	func authenticate(basic: BasicAuthorization, for request: Request) async throws {
 		guard
@@ -21,7 +38,7 @@ struct UserAuthenticator: AsyncBasicAuthenticator {
 
 func routes(_ app: Application) throws {
 	let eventController = ServerSentEventController()
-	let roomController = RoomController()
+	let roomController = RoomController(eventController: eventController)
 	let userController = UserController()
 
 	let app = app.grouped(UserAuthenticator())
@@ -43,19 +60,13 @@ func routes(_ app: Application) throws {
 		req.fileio.streamFile(at: "../ChatClientWeb/styles.css")
 	}
 
-	app.get("messages") { req -> ServerSentEventResponse in
-		let id = UUID()
-		print("Adding SSE client (\(id))")
+	app.grouped(AuthTokenInQueryAuthenticator()).grouped(UserModel.guardMiddleware()).get("events") { req -> ServerSentEventResponse in
+		let user = try req.auth.require(UserModel.self)
+		let id = try user.requireID()
+		print("Adding SSE client (\(user.username))")
 		return eventController.createResponse(id: id, onClose: {
-			print("Removing SSE client (\(id))")
+			print("Removing SSE client (\(user.username))")
 		})
-	}
-
-	app.post("messages") { req -> String in
-		let message = try req.content.decode(MessageEvent.self)
-		eventController.emit(message)
-
-		return "Message is \(message)"
 	}
 
 	app.grouped(UserModel.guardMiddleware()).group("rooms") { app in
