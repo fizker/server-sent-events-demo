@@ -4,7 +4,7 @@ import ServerSentEventModels
 import ServerSentEventVapor
 
 func routes(_ app: Application) throws {
-	let eventController = ServerSentEventController()
+	let eventController = EventController()
 	let roomController = RoomController(eventController: eventController)
 	let userController = UserController()
 
